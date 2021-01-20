@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2021-01-19T11:14:10Z" name="Default suite" finished-at="2021-01-19T11:14:14Z" duration-ms="3497">
+    <groups>
+    </groups>
+    <test started-at="2021-01-19T11:14:10Z" name="Default test" finished-at="2021-01-19T11:14:14Z" duration-ms="3497">
+      <class name="com.api.tests.ExcelTests">
+        <test-method signature="testExcelSheetData()[pri:0, instance:com.api.tests.ExcelTests@2e32ccc5]" started-at="2021-01-19T16:44:10Z" name="testExcelSheetData" finished-at="2021-01-19T16:44:14Z" duration-ms="3476" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testExcelSheetData -->
+      </class> <!-- com.api.tests.ExcelTests -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>

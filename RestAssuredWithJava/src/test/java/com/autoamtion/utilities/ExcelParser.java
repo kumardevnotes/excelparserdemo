@@ -1,17 +1,20 @@
 package com.autoamtion.utilities;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+// import statements
 public class ExcelParser {
 	public static FileInputStream fileInputStream = null;
 	public static XSSFWorkbook workbook = null;
@@ -120,28 +123,27 @@ public class ExcelParser {
 		return testRunDetails;
 	}
 
-	public static void setPositionValue(String fileName, String sheetName, String valueToBeMatched,
-			int columnTestIteration,
-			int columnPosition, String newValue) throws Exception {
+	public static void setPositionValue(String fileName, String sheetName, String testCaseIterationID,
+			int columnTestIteration, int columnPosition, String positionCreated) throws Exception {
 
 		try {
-			System.out.println(" ********************** Updating the value "+ fileName + sheetName + valueToBeMatched + columnTestIteration 
-					+ columnPosition + newValue);
+			System.out.println(" ********************** Updated the value " + fileName + sheetName + testCaseIterationID
+					+ columnTestIteration + columnPosition + positionCreated);
 			FileInputStream fileInputStream = new FileInputStream(new File(fileName));
-			
+
 			workbook = new XSSFWorkbook(fileInputStream);
 			sheet = workbook.getSheet(sheetName);
 			Iterator<Row> rowIterator = sheet.iterator();
 			while (rowIterator.hasNext()) {
-					Row row = rowIterator.next();
-					Cell actualCell = row.getCell(columnTestIteration);
-					DataFormatter formatter = new DataFormatter();
-					String val = formatter.formatCellValue(actualCell);
-					if (val.contains(valueToBeMatched)) {
-						actualCell = row.getCell(columnPosition);
-						actualCell.setCellValue(newValue);
-						break;
-					}
+				Row row = rowIterator.next();
+				Cell actualCell = row.getCell(columnTestIteration);
+				DataFormatter formatter = new DataFormatter();
+				String val = formatter.formatCellValue(actualCell);
+				if (val.contains(testCaseIterationID)) {
+					actualCell = row.getCell(columnPosition);
+					actualCell.setCellValue(positionCreated);
+					break;
+				}
 			}
 			// Write the changes to workbook as shown below
 			FileOutputStream fileOutputStream = new FileOutputStream(fileName);
@@ -154,4 +156,78 @@ public class ExcelParser {
 		}
 	}
 
+	public static List<Row> getMatchingRows(XSSFSheet sheet, String filterKey) throws Exception {
+		List<Row> rowList = new ArrayList<Row>();
+		Iterator<Row> rowIterator = sheet.iterator();
+		while (rowIterator.hasNext()) {
+			try {
+				Row row = rowIterator.next();
+				Iterator<Cell> cellIterator = row.cellIterator();
+				while (cellIterator.hasNext()) {
+					try {
+						Cell cell = cellIterator.next();
+						String value = "";
+						switch (cell.getCellType()) {
+						case Cell.CELL_TYPE_NUMERIC:
+							value = String.valueOf(cell.getNumericCellValue());
+							if (value.equals(filterKey)) {
+								rowList.add(row);
+							}
+							break;
+						case Cell.CELL_TYPE_STRING:
+							value = cell.getStringCellValue();
+							if (value.equals(filterKey)) {
+								rowList.add(row);
+							}
+							break;
+						}
+					} catch (NullPointerException e) {
+						System.out.println("Caught an exception while getting data: " + e);
+					}
+				}
+			} catch (Exception e) {
+				throw e;
+			}
+		}
+
+		return rowList;
+	}
+
+	public static Row getMatchingRow(List<Row> rowList, String filterKey) throws Exception {
+		Row myRow = null;
+		Iterator<Row> rowIterator = rowList.iterator();
+		while (rowIterator.hasNext()) {
+			try {
+				Row row = rowIterator.next();
+				Iterator<Cell> cellIterator = row.cellIterator();
+				while (cellIterator.hasNext()) {
+					try {
+						Cell cell = cellIterator.next();
+						String value = "";
+						switch (cell.getCellType()) {
+						case Cell.CELL_TYPE_NUMERIC:
+							value = String.valueOf(cell.getNumericCellValue());
+							if (value.equals(filterKey)) {
+								myRow = row;
+							}
+							break;
+						case Cell.CELL_TYPE_STRING:
+							value = cell.getStringCellValue();
+							if (value.equals(filterKey)) {
+								myRow = row;
+							}
+							break;
+						}
+					} catch (NullPointerException e) {
+						System.out.println("Caught an exception while getting data: " + e);
+					}
+				}
+			} catch (Exception e) {
+				throw e;
+			}
+		}
+
+		return myRow;
+	}
+	
 }

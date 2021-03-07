@@ -26,7 +26,7 @@ public class ExcelTests {
 	}
 
 	// Return row based on ScenarioType && UserType
-	@Test
+	//@Test
 	public void printValues() {
 		try {
 			List<Row> rowList = ExcelParser.getMatchingRows(sheet, "branch1");
